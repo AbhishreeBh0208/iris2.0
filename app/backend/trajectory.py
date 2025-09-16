@@ -15,11 +15,9 @@ router = APIRouter()
 # Get Gemini API key
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY not set in environment. Add it to your .env file!")
-
-# Configure Gemini client
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure Gemini client if API key is available
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 class SimInput(BaseModel):
     swarm_count: int
@@ -46,21 +44,31 @@ def generate_ai_insights(metrics: dict):
     """
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
+        if GEMINI_API_KEY:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(prompt)
 
-        # Extract text
-        if response and response.candidates:
-            text = response.candidates[0].content.parts[0].text.strip()
+            # Extract text
+            if response and response.candidates:
+                text = response.candidates[0].content.parts[0].text.strip()
+            else:
+                text = "No insights generated."
         else:
-            text = "No insights generated."
+            # Fallback insights when no API key
+            text = f"""
+            • Mission Efficiency: {metrics.get('swarm_count', 0)} nanosats with {metrics.get('delta_v_used', 0):.1f} km/s delta-v
+            • Key Risks: Propulsion system stress, communication delays
+            • Recommendations: Monitor fuel consumption, maintain redundant communication links
+            • Success Probability: {metrics.get('success_probability', 0.5)*100:.1f}%
+            • Duration: {metrics.get('time_of_flight', 280)} days estimated
+            """
 
         return {"id": f"insights-{random.randint(1000,9999)}", "insights": text}
 
     except Exception as e:
         return {
             "id": "insights-error",
-            "insights": f"AI engine unavailable. Fallback insights: Keep delta-v optimized. Error: {e}"
+            "insights": f"AI engine unavailable. Fallback insights: Keep delta-v optimized. Monitor swarm coordination. Error: {e}"
         }
 
 @router.post("/simulate")

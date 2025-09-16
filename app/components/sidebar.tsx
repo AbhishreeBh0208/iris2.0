@@ -158,8 +158,8 @@ export default function Sidebar() {
 
         {missionsOpen && (
           <div style={{ marginLeft: "15px", marginTop: "5px" }}>
-            <Link href="/mission">
-              <p style={getLinkStyle("/mission")}>
+            <Link href="/new-missions">
+              <p style={getLinkStyle("/new-missions")}>
                 <Rocket size={16} /> New Mission
               </p>
             </Link>
