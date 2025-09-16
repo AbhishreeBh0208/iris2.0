@@ -49,35 +49,35 @@ Visualization: Three.js for planetary system, Cesium for globe & ground stations
 AI Engine: Google Gemini (text analysis + mission insights)
 
 1. Clone the repository
+``` ruby
 git clone https://github.com/your-username/iris.git
 cd iris
-
-2. Backend Setup (FastAPI)
+```
+3. Backend Setup (FastAPI)
 
 Create a virtual environment:
-
+``` ruby
 python -m venv .venv
 source .venv/bin/activate   # (Linux/macOS)
 .venv\Scripts\activate      # (Windows)
-
+```
 
 Install dependencies:
-
+```rubi
 pip install -r requirements.txt
-
-
+```
 Run backend:
-
+```ruby
 uvicorn app.backend.main:app --reload
+```
 
 3. Frontend Setup (Next.js)
+``` ruby
 cd iris-frontend
 npm install
 npm run dev
-
-
-Open the app at http://localhost:3000
- 🎉
+```
+Open the app at http://localhost:3000 🎉
 
 🔑 Environment Variables
 
