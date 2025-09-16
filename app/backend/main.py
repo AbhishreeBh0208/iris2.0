@@ -15,6 +15,7 @@ from typing import Optional
 import uvicorn
 from trajectory import generate_ai_insights
 from trajectory import router as trajectory_router
+from ai_trajectory import router as ai_trajectory_router
 from contextlib import asynccontextmanager
 
 app = FastAPI(title="IRIS Controls Backend")
@@ -100,35 +101,56 @@ def get_trajectory(
     return {"id": f"nanosat-{body}", "positions": positions}
 
 
+# --- Simple GET trajectory ---
+@app.get("/trajectory", response_model=TrajectoryResponse)
+def get_trajectory(
+    alt: float = Query(500, description="Orbit altitude in km (for Earth or Mars)"),
+    body: str = Query("earth", description="Central body: earth, mars, sun"),
+    points: int = Query(200, description="Number of trajectory points"),
+):
+    """Generate a nanosat trajectory with query parameters."""
+
+    if body.lower() == "earth":
+        orbit = Orbit.circular(Earth, alt * u.km)
+    elif body.lower() == "mars":
+        orbit = Orbit.circular(Mars, alt * u.km)
+    elif body.lower() == "sun":
+        orbit = Orbit.circular(Sun, 1 * u.AU)  # Earth-like orbit
+    else:
+        return {"id": "error", "positions": []}
+
+    # Generate trajectory points
+    positions = []
+    epoch = datetime.utcnow()
+    period = orbit.period.to(u.s).value if orbit.period is not None else 86400
+    step = period / points
+
+    for i in range(points):
+        sample = orbit.propagate(i * step * u.s)
+        r = sample.r.to(u.km).value
+        positions.append({"x": float(r[0]), "y": float(r[1]), "z": float(r[2])})
+
+    return {"id": f"nanosat-{body}", "positions": positions}
+
+
 # --- Include advanced simulation routes ---
 app.include_router(trajectory_router, prefix="/trajectory", tags=["trajectory"])
+app.include_router(ai_trajectory_router, prefix="/ai_trajectory", tags=["ai_trajectory"])
 
 @app.post("/trajectory/simulate")
 async def simulate_trajectory(params: dict):
-    # Enhanced to work with both old and new parameter formats
+    # Mocked example response
     metrics = {
         "intercept_time": 42,
         "velocity": 7.8,
-        "delta_v_used": params.get("delta_v_budget", params.get("delta_v", 0.5)),
-        "swarm_count": params.get("swarm_count", params.get("swarms", 24)),
-        "success_probability": params.get("success_probability", 0.75),
-        "target_name": params.get("target", params.get("target_name", "Earth")),
-        "time_of_flight": params.get("time_of_flight", params.get("days", 280))
+        "delta_v_used": params.get("delta_v_budget", 0.5),
+        "swarm_count": params.get("swarm_count", 24),
     }
 
     insights = generate_ai_insights(metrics)
 
-    # Save successful mission to history
-    saved_mission = save_mission_to_history({
-        "target_name": metrics["target_name"],
-        "swarm_size": metrics["swarm_count"],
-        "delta_v": metrics["delta_v_used"],
-        "time_of_flight": metrics["time_of_flight"],
-        "success_probability": metrics["success_probability"]
-    })
-
     return {
-        "id": saved_mission.get("id", "sim-001") if saved_mission else "sim-001",
+        "id": "sim-001",
         "message": f"Simulated {metrics['swarm_count']} nanosats",
         "metrics": metrics,
         "insights": insights,
