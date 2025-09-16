@@ -78,13 +78,3 @@ npm install
 npm run dev
 ```
 Open the app at http://localhost:3000 🎉
-
-🔑 Environment Variables
-
-Create a .env file in the backend root with:
-
-GEMINI_API_KEY=your_google_gemini_api_key
-
-And in the frontend root:
-
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
