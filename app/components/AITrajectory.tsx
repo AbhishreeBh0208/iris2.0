@@ -42,7 +42,7 @@ export default function AITrajectoryComponent() {
     setError("");
     
     try {
-      const response = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/ai_trajectory/api/simulate", {
+      const response = await fetch("http://localhost:8000/ai_trajectory/api/simulate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

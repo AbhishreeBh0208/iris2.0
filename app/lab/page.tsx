@@ -17,7 +17,7 @@ export default function TrajectoryPage() {
   const handleSimulation = async (params: any) => {
     try {
       // Call simulation
-      const res = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/trajectory/simulate", {
+      const res = await fetch("http://localhost:8000/trajectory/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
@@ -42,7 +42,7 @@ export default function TrajectoryPage() {
 
       // Fetch insights with loading state
       setLoadingInsights(true);
-      const aiRes = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/trajectory/insights", {
+      const aiRes = await fetch("http://localhost:8000/trajectory/insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),

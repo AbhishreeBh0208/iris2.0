@@ -43,7 +43,7 @@ export default function NewMissionForm() {
     };
 
     try {
-      const res = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/check-feasibility", {
+      const res = await fetch("http://localhost:8000/api/check-feasibility", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
@@ -83,7 +83,7 @@ export default function NewMissionForm() {
     };
 
     try {
-      const res = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/launch-mission", {
+      const res = await fetch("http://localhost:8000/api/launch-mission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
