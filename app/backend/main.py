@@ -6,6 +6,7 @@ from poliastro.bodies import Earth, Sun, Mars
 from poliastro.twobody import Orbit
 from datetime import datetime
 import json
+from dotenv import load_dotenv
 import os
 import random
 import math
@@ -17,6 +18,8 @@ from trajectory import generate_ai_insights
 from trajectory import router as trajectory_router
 from ai_trajectory import router as ai_trajectory_router
 from contextlib import asynccontextmanager
+
+load_dotenv()
 
 app = FastAPI(title="IRIS Controls Backend")
 

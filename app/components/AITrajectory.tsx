@@ -340,6 +340,7 @@ export default function AITrajectoryComponent() {
           }}>
             <div style={{ color: "#a7f3d0", fontSize: "12px", marginBottom: "8px" }}>STATUS</div>
             <div style={{ color: "#ecfdf5", fontSize: "16px" }}>
+              
               {trajectoryData.status.toUpperCase()} - Trajectory data generated and saved
             </div>
             <div style={{ color: "#a7f3d0", fontSize: "12px", marginTop: "8px" }}>

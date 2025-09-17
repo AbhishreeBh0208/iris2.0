@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import MissionHeader from "../components/MissionHeader";
 import MissionStats from "../components/MissionStats";
@@ -14,14 +14,30 @@ export default function MissionInfoPage() {
   const [timestamp, setTimestamp] = useState<string>("");
 
   useEffect(() => {
-    setTimestamp(new Date().toLocaleString());
+    // Update timestamp every second
+    const interval = setInterval(() => {
+      setTimestamp(new Date().toLocaleString());
+    }, 1000);
+
+    return () => clearInterval(interval); // cleanup
   }, []);
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#0f172a" }}>
-        <MissionHeader missionName={missionName} status={status} timestamp={timestamp} />
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          background: "#0f172a",
+        }}
+      >
+        <MissionHeader
+          missionName={missionName}
+          status={status}
+          timestamp={timestamp}
+        />
         <MissionStats
           stats={[
             { label: "Velocity", value: 7.8, unit: "km/s" },

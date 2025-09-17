@@ -1,53 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 interface MissionHeaderProps {
   missionName: string;
   status: string;
+  timestamp: string;
 }
 
-export default function MissionHeader({ missionName, status }: MissionHeaderProps) {
-  const [timestamp, setTimestamp] = useState<string>("");
-
-  useEffect(() => {
-    // Initial timestamp
-    setTimestamp(new Date().toLocaleString());
-
-    // Update every second
-    const interval = setInterval(() => {
-      setTimestamp(new Date().toLocaleString());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
+export default function MissionHeader({
+  missionName,
+  status,
+  timestamp,
+}: MissionHeaderProps) {
   return (
     <div
       style={{
-        padding: "20px",
+        padding: "16px 24px",
         background: "#1e293b",
-        borderBottom: "1px solid #334155",
-        color: "white",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        borderBottom: "1px solid #334155",
       }}
     >
-      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>{missionName}</h1>
       <div>
-        <span
-          style={{
-            background: status === "Active" ? "#22c55e" : "#ef4444",
-            padding: "5px 10px",
-            borderRadius: "5px",
-            marginRight: "15px",
-          }}
-        >
-          {status}
-        </span>
-        <span style={{ opacity: 0.7 }}>{timestamp}</span>
+        <h2 style={{ margin: 0, color: "white" }}>{missionName}</h2>
+        <p style={{ margin: 0, color: "#9ca3af" }}>
+          {timestamp || "Loading time..."}
+        </p>
       </div>
+      <span
+        style={{
+          padding: "6px 12px",
+          borderRadius: "8px",
+          background: status === "Active" ? "#16a34a" : "#ef4444",
+          color: "white",
+          fontWeight: "bold",
+        }}
+      >
+        {status}
+      </span>
     </div>
   );
 }
